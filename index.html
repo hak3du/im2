@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+  <title>AR Scene 2 - Reveal Image 3</title>
+</head>
+<body style="margin:0; overflow:hidden;">
+
+  <!-- AR Scene -->
+  <a-scene
+    embedded
+    vr-mode-ui="enabled: false"
+    loading-screen="enabled: false"
+    arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
+  >
+    <a-marker type="pattern" url="marker2.patt" id="ar-marker2" emitevents="true">
+      <a-box id="ar-box2" position="0 0.5 0" material="color: orange; opacity: 0.5;"></a-box>
+      <a-text id="info-text2" value="Press NEXT to reveal Image 3" color="white" position="0 1 0" align="center"></a-text>
+      <a-entity light="type: directional; intensity: 1" position="0 2 1"></a-entity>
+      <a-entity light="type: ambient; intensity: 0.5"></a-entity>
+    </a-marker>
+    <a-entity camera></a-entity>
+  </a-scene>
+
+  <!-- Next Button -->
+  <button onclick="triggerReveal3()" style="
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      background: orange;
+      color: white;
+      font-weight: bold;
+  ">Next</button>
+
+  <script>
+    const BACKEND = "https://retreat-hobbies-west-inkjet.trycloudflare.com";
+
+    async function triggerReveal3() {
+      try {
+        // Call the same endpoint, but now the main website will interpret it as reveal img3
+        const res = await fetch(`${BACKEND}/reveal-next`, { method: "POST" });
+        if (res.ok) {
+          console.log("[AR2] Reveal Image 3 triggered successfully");
+          alert("Main website Image 3 will now reveal!");
+        } else {
+          console.error("[AR2] Reveal failed", await res.text());
+        }
+      } catch (err) {
+        console.error("[AR2] Error triggering reveal:", err);
+      }
+    }
+
+    const marker2 = document.getElementById("ar-marker2");
+    marker2.addEventListener("markerFound", () => console.log("[AR2] Marker detected"));
+    marker2.addEventListener("markerLost", () => console.log("[AR2] Marker lost"));
+  </script>
+
+</body>
+</html>
